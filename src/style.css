@@ -1,0 +1,51 @@
+/** SETTING UP THEME COLORS */
+body,
+html {
+  background-color: #dae9f4;
+  color: #274c5e;
+}
+
+.light-blue {
+  background-color: #7f9eb2;
+}
+
+.dark-blue {
+  background-color: #274c5e;
+  color: #fff;
+}
+
+.form-control {
+  background-color: #f6fafd;
+}
+
+.list-group-item {
+  background-color: #f9fbfd;
+  border: 0.5px solid #b0c1c9;
+}
+
+/** GENERAL STYLES */
+
+.no-pm {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.flex-container {
+  display: flex;
+}
+
+/** DETAILS STYLES */
+
+.activity-checkbox {
+  width: 30px;
+  height: 30px;
+  margin: 0 5px 0 0 !important;
+}
+
+.activities-title {
+  display: inline;
+}
+
+.notes-title {
+  font-size: 22px;
+}
