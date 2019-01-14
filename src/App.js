@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import { convertHoursToHumanReadableFormatWithoutSeconds } from "./utils";
 
+const MILISECONDS_IN_HOUR = 360000;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -9,10 +11,18 @@ class App extends Component {
       sleepHours: 6,
       newActivityTime: "",
       newActivityTimeString: "0h 0m",
-      newActivityDescription: "Your activity description...",
+      newActivityDescription: "",
       happyNotes: localStorage.getItem("happyNotes") || "",
       sadNotes: localStorage.getItem("sadNotes") || "",
-      activities: JSON.parse(localStorage.getItem("activities")) || []
+      activities: JSON.parse(localStorage.getItem("activities")) || [
+        {
+          id: 1,
+          description: "Be happy",
+          isDone: false,
+          time: 1.0,
+          timeString: convertHoursToHumanReadableFormatWithoutSeconds(1.0)
+        }
+      ]
     };
   }
   componentDidMount() {
@@ -20,7 +30,9 @@ class App extends Component {
     setInterval(() => {
       localStorage.setItem("activities", JSON.stringify(that.state.activities));
     }, 1000);
+    this.handleNotifications();
   }
+
   deleteActivities = () => {
     const confirmed = window.confirm(`Are you sure to delete activity?`);
     if (confirmed) {
@@ -29,6 +41,54 @@ class App extends Component {
       }));
     }
   };
+
+  handleNotifications = () => {
+    if (!("Notification" in window)) {
+      console.log("Notification API not supported!");
+      return;
+    }
+
+    const that = this;
+
+    Notification.requestPermission(result => {
+      let displayMorningNotification = true;
+      let displayEveningNotification = true;
+      if (result === "granted") {
+        setInterval(() => {
+          const date = new Date();
+          if (date.getHours() === 0) {
+            displayMorningNotification = true;
+            displayEveningNotification = true;
+          }
+          if (date.getHours() === 8 && displayMorningNotification) {
+            that.nonPersistentNotification("Let's plan your day!");
+            displayMorningNotification = false;
+          }
+          if (date.getHours() === 22 && displayEveningNotification) {
+            that.nonPersistentNotification("Let's sum up your day");
+            displayEveningNotification = false;
+          }
+        }, MILISECONDS_IN_HOUR);
+      }
+      if (result === "default") {
+        return alert("If you want to get reminder notifications please enable notifications");
+      }
+    });
+  };
+
+  nonPersistentNotification(message) {
+    if (!("Notification" in window)) {
+      console.log("Notification API not supported!");
+      return;
+    }
+
+    try {
+      const notification = new Notification(message);
+      setTimeout(notification.close.bind(notification), 5000);
+    } catch (err) {
+      console.log("Notification API error: " + err);
+    }
+  }
 
   addActivity = () => {
     if (this.state.newActivityDescription.length === 0) {
@@ -51,7 +111,8 @@ class App extends Component {
           timeString: convertHoursToHumanReadableFormatWithoutSeconds(this.state.newActivityTime)
         }
       ],
-      newActivityTimeString: "0h 0m"
+      newActivityTimeString: "0h 0m",
+      newActivityDescription: ""
     }));
   };
   deleteActivity = activity => {
@@ -154,7 +215,7 @@ class App extends Component {
                   type="text"
                   className="form-control input-sm text-right"
                   value={this.state.newActivityTimeString}
-                  style={{ marginRight: 5, width: "75px" }}
+                  style={{ marginRight: 5, width: "70px" }}
                   onChange={event => this.handleNewActivityTime(event.target.value)}
                 />
 
@@ -198,8 +259,8 @@ class App extends Component {
                   <span>{progressBarValue}% elapsed</span>
                 </div>
               </div>
-              <div class="col-md-12 col-xs-12 no-pm">
-                <h3 class="activities-title">
+              <div className="col-md-12 col-xs-12 no-pm">
+                <h3 className="activities-title">
                   Activities ({this.state.activities.filter(item => item.isDone).length}/{this.state.activities.length})
                 </h3>
                 <button
@@ -228,7 +289,7 @@ class App extends Component {
                         placeholder="Time"
                         className="form-control input-sm text-right"
                         value={item.timeString}
-                        style={{ marginRight: 5, width: "75px" }}
+                        style={{ marginRight: 5, width: "70px" }}
                         onChange={e => {
                           item.timeString = e.target.value;
                           item.time = this.parseTimeStringToHourFloat(e.target.value);
@@ -254,10 +315,11 @@ class App extends Component {
               </ul>
             </div>
             <div className="col-md-4">
-              <h3 class="notes-title">Update these one at the end of your day to sum up your day</h3>
+              <h3 className="notes-title">Update these one at the end of your day to sum up your day</h3>
               <div>
                 <label>
-                  Happy notes <span class="fa fa-smile-beam" /> (describe here things that happened and made you happy)
+                  Happy notes <span className="fa fa-smile-beam" /> (describe here things that happened and made you
+                  happy)
                 </label>
                 <textarea
                   placeholder="Happy notes"
@@ -268,7 +330,8 @@ class App extends Component {
               </div>
               <div>
                 <label>
-                  Sadness notes <span class="fa fa-frown" /> (describe here things that happened and made you sad/angry)
+                  Sadness notes <span className="fa fa-frown" /> (describe here things that happened and made you
+                  sad/angry)
                 </label>
                 <textarea
                   placeholder="Sad notes"
