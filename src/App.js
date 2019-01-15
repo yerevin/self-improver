@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sleepHours: 6,
+      sleepHours: Number(localStorage.getItem("sleepHours")) || 6,
       newActivityTime: "",
       newActivityTimeString: "0h 0m",
       newActivityDescription: "",
@@ -206,7 +206,10 @@ class App extends Component {
                 placeholder="Sleep hours"
                 className="form-control input-sm"
                 value={this.state.sleepHours}
-                onChange={event => this.setState({ sleepHours: Number(event.target.value) })}
+                onChange={event => {
+                  this.setState({ sleepHours: Number(event.target.value) });
+                  localStorage.setItem("sleepHours", Number(event.target.value));
+                }}
               />
               <label>Add new activity</label>
               <div className="flex-container">
