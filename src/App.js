@@ -206,7 +206,7 @@ class App extends Component {
                 placeholder="Sleep hours"
                 className="form-control input-sm"
                 value={this.state.sleepHours}
-                onChange={event => this.setState({ sleepHours: event.target.value })}
+                onChange={event => this.setState({ sleepHours: Number(event.target.value) })}
               />
               <label>Add new activity</label>
               <div className="flex-container">
