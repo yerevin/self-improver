@@ -9,6 +9,9 @@ class App extends Component {
     super(props);
     this.state = {
       sleepHours: Number(localStorage.getItem("sleepHours")) || 6,
+      isHappyWithDay: JSON.parse(localStorage.getItem("isHappyWithDay")) || false,
+      happyDaysDates: JSON.parse(localStorage.getItem("happyDaysDates")) || {},
+      resetOnNewDay: JSON.parse(localStorage.getItem("resetOnNewDay")) || false,
       newActivityTime: "",
       newActivityTimeString: "0h 0m",
       newActivityDescription: "",
@@ -26,9 +29,33 @@ class App extends Component {
     };
   }
   componentDidMount() {
+    const today = new Date().toISOString().substring(0, 10);
+    if (this.state.resetOnNewDay && !JSON.parse(localStorage.getItem("happyDaysDates"))[today]) {
+      this.setState({
+        isHappyWithDay: false,
+        happyNotes: "",
+        sadNotes: "",
+        activities: []
+      });
+      localStorage.setItem("activities", []);
+      localStorage.setItem("happyNotes", "");
+      localStorage.setItem("sadNotes", "");
+      localStorage.setItem("isHappyWithDay", false);
+    }
+    if (!JSON.parse(localStorage.getItem("happyDaysDates"))[today]) {
+      this.setState({
+        isHappyWithDay: false
+      });
+      localStorage.setItem("isHappyWithDay", false);
+    }
     const that = this;
     setInterval(() => {
       localStorage.setItem("activities", JSON.stringify(that.state.activities));
+      const currentState = JSON.parse(JSON.stringify(that.state));
+      delete currentState.happyDaysDates;
+      this.state.happyDaysDates[today] = currentState;
+      localStorage.setItem("happyDaysDates", JSON.stringify(this.state.happyDaysDates));
+      this.setState({ happyDaysDates: this.state.happyDaysDates });
     }, 1000);
     this.handleNotifications();
   }
@@ -196,14 +223,36 @@ class App extends Component {
     return (
       <div className="container-fluid">
         <div className="row">
-          <div className="col-md-12">
-            <div className="col-md-8">
+          <div className="col-md-12 col-sm-12">
+            <div className="col-md-8 col-sm-12">
               <header>
                 <h1>Manage your day</h1>
+                <div className="flex-container mg-bottom-5">
+                  Clean activites and notes on start of new day?
+                  <input
+                    className="happy-day-checkbox"
+                    type="checkbox"
+                    checked={this.state.resetOnNewDay}
+                    style={{ marginLeft: 5 }}
+                    onChange={e => {
+                      if (this.state.resetOnNewDay) {
+                        this.setState({ resetOnNewDay: false });
+                        localStorage.setItem("resetOnNewDay", false);
+                      } else {
+                        this.setState({ resetOnNewDay: true });
+                        localStorage.setItem("resetOnNewDay", true);
+                      }
+                    }}
+                  />
+                </div>
               </header>
               <label>Your sleep hours</label>
               <input
                 placeholder="Sleep hours"
+                type="number"
+                step={0.1}
+                max={24}
+                min={0}
                 className="form-control input-sm"
                 value={this.state.sleepHours}
                 onChange={event => {
@@ -317,8 +366,26 @@ class App extends Component {
                 })}
               </ul>
             </div>
-            <div className="col-md-4">
+            <div className="col-md-4 col-sm-12">
               <h3 className="notes-title">Update these one at the end of your day to sum up your day</h3>
+              <div className="flex-container mg-bottom-5">
+                Are you happy with your day?
+                <input
+                  className="happy-day-checkbox"
+                  type="checkbox"
+                  checked={this.state.isHappyWithDay}
+                  style={{ marginLeft: 5 }}
+                  onChange={e => {
+                    if (this.state.isHappyWithDay) {
+                      this.setState({ isHappyWithDay: false });
+                      localStorage.setItem("isHappyWithDay", false);
+                    } else {
+                      this.setState({ isHappyWithDay: true });
+                      localStorage.setItem("isHappyWithDay", true);
+                    }
+                  }}
+                />
+              </div>
               <div>
                 <label>
                   Happy notes <span className="fa fa-smile-beam" /> (describe here things that happened and made you
@@ -342,6 +409,25 @@ class App extends Component {
                   value={this.state.sadNotes}
                   onChange={event => this.changeSadNotes(event.target.value)}
                 />
+              </div>
+              <div className="col-md-12 col-sm-12">
+                <h4>
+                  List of days you were happy - (if there are not too many - hey don't worry may you have just forgot to
+                  set a 'happy' checkbox <span className="fa fa-smile-beam" /> )
+                </h4>
+                <div className="happy-days-container">
+                  {Object.keys(this.state.happyDaysDates).map((key, index) => {
+                    if (this.state.happyDaysDates[key].isHappyWithDay) {
+                      return (
+                        <span key={index}>
+                          {index > 0 && ", "}
+                          {key}
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
               </div>
             </div>
           </div>

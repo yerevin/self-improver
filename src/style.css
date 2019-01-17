@@ -30,6 +30,10 @@ html {
   margin: 0 !important;
 }
 
+.mg-bottom-5 {
+  margin-bottom: 5px;
+}
+
 .flex-container {
   display: flex;
 }
@@ -44,6 +48,18 @@ html {
 
 .activities-title {
   display: inline;
+}
+
+.happy-day-checkbox {
+  width: 20px;
+  height: 20px;
+  margin: 0 0 0 10px !important;
+}
+
+.happy-days-container {
+  padding: 1px;
+  background-color: #f4f8fa;
+  border: 2px solid #274c5e;
 }
 
 .notes-title {
