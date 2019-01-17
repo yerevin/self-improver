@@ -30,7 +30,12 @@ class App extends Component {
   }
   componentDidMount() {
     const today = new Date().toISOString().substring(0, 10);
-    if (this.state.resetOnNewDay && !JSON.parse(localStorage.getItem("happyDaysDates"))[today]) {
+    if (
+      this.state.resetOnNewDay &&
+      (!JSON.parse(localStorage.getItem("happyDaysDates")) ||
+        (JSON.parse(localStorage.getItem("happyDaysDates")) &&
+          !JSON.parse(localStorage.getItem("happyDaysDates"))[today]))
+    ) {
       this.setState({
         isHappyWithDay: false,
         happyNotes: "",
@@ -42,7 +47,10 @@ class App extends Component {
       localStorage.setItem("sadNotes", "");
       localStorage.setItem("isHappyWithDay", false);
     }
-    if (!JSON.parse(localStorage.getItem("happyDaysDates"))[today]) {
+    if (
+      !JSON.parse(localStorage.getItem("happyDaysDates")) ||
+      (JSON.parse(localStorage.getItem("happyDaysDates")) && !JSON.parse(localStorage.getItem("happyDaysDates"))[today])
+    ) {
       this.setState({
         isHappyWithDay: false
       });
@@ -53,7 +61,9 @@ class App extends Component {
       localStorage.setItem("activities", JSON.stringify(that.state.activities));
       const currentState = JSON.parse(JSON.stringify(that.state));
       delete currentState.happyDaysDates;
-      this.state.happyDaysDates[today] = currentState;
+      if (this.state.happyDaysDates) {
+        this.state.happyDaysDates[today] = currentState;
+      }
       localStorage.setItem("happyDaysDates", JSON.stringify(this.state.happyDaysDates));
       this.setState({ happyDaysDates: this.state.happyDaysDates });
     }, 1000);
