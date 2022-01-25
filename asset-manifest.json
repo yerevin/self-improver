@@ -1,13 +1,13 @@
 {
-  "main.css": "/self-improver/static/css/main.8bf4a3fb.chunk.css",
-  "main.js": "/self-improver/static/js/main.5a6a640e.chunk.js",
-  "main.js.map": "/self-improver/static/js/main.5a6a640e.chunk.js.map",
-  "static/js/1.ba686638.chunk.js": "/self-improver/static/js/1.ba686638.chunk.js",
-  "static/js/1.ba686638.chunk.js.map": "/self-improver/static/js/1.ba686638.chunk.js.map",
+  "main.css": "/self-improver/static/css/main.0415ae25.chunk.css",
+  "main.js": "/self-improver/static/js/main.7241432c.chunk.js",
+  "main.js.map": "/self-improver/static/js/main.7241432c.chunk.js.map",
+  "static/js/1.c7fe8230.chunk.js": "/self-improver/static/js/1.c7fe8230.chunk.js",
+  "static/js/1.c7fe8230.chunk.js.map": "/self-improver/static/js/1.c7fe8230.chunk.js.map",
   "runtime~main.js": "/self-improver/static/js/runtime~main.1aba6e21.js",
   "runtime~main.js.map": "/self-improver/static/js/runtime~main.1aba6e21.js.map",
-  "static/css/main.8bf4a3fb.chunk.css.map": "/self-improver/static/css/main.8bf4a3fb.chunk.css.map",
+  "static/css/main.0415ae25.chunk.css.map": "/self-improver/static/css/main.0415ae25.chunk.css.map",
   "index.html": "/self-improver/index.html",
-  "precache-manifest.6aa5a2cc55f158c9de2c2b63758c85f5.js": "/self-improver/precache-manifest.6aa5a2cc55f158c9de2c2b63758c85f5.js",
+  "precache-manifest.b322d5d8fc3cc142f603c8dd85ddc884.js": "/self-improver/precache-manifest.b322d5d8fc3cc142f603c8dd85ddc884.js",
   "service-worker.js": "/self-improver/service-worker.js"
 }
